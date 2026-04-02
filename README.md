@@ -2,7 +2,7 @@
 
 Private plugin marketplace for Claude Code. Single source of truth for team skills, hooks, agents, and MCP servers.
 
-Push an update to this repo, Slack notifies the team, devs run one command to update.
+Push an update to this repo, devs run one command to update.
 
 ---
 
@@ -49,7 +49,7 @@ In a Claude Code session, try invoking a skill:
 
 ## Updating
 
-When you get a Slack notification that the marketplace has been updated:
+To pull the latest plugin updates:
 
 ```bash
 claude-marketplace
@@ -131,7 +131,7 @@ Full removal (plugins + repo clone + shell alias):
 1. Make your changes under `plugins/your-plugin-name/`
 2. If it's a new plugin, add an entry to `.claude-plugin/marketplace.json`
 3. Commit and push to `main`
-4. Slack notification fires automatically — devs run `claude-marketplace` to update
+4. Notify devs to run `claude-marketplace` to update
 
 ### Plugin structure
 
@@ -149,16 +149,6 @@ plugins/your-plugin-name/
 └── .mcp.json                # MCP server config (optional)
 ```
 
-### Setting up Slack notifications
-
-1. Create a [Slack Incoming Webhook](https://api.slack.com/messaging/webhooks)
-2. Add it as a repository secret named `SLACK_WEBHOOK_URL`:
-   - Go to repo Settings > Secrets and variables > Actions
-   - Click "New repository secret"
-   - Name: `SLACK_WEBHOOK_URL`, Value: your webhook URL
-
-Notifications fire on any push to `main` that changes files under `plugins/` or `.claude-plugin/`.
-
 ---
 
 ## Repo Structure
@@ -166,9 +156,6 @@ Notifications fire on any push to `main` that changes files under `plugins/` or 
 ```
 ├── .claude-plugin/
 │   └── marketplace.json              # Plugin catalogue
-├── .github/
-│   └── workflows/
-│       └── notify-slack.yml          # Slack notification on update
 ├── plugins/
 │   ├── team-standards/               # Core dev team plugin
 │   │   ├── skills/                   # code-review, pr-create, ticket-workflow
