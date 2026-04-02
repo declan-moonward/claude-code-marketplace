@@ -11,7 +11,7 @@ Push an update to this repo, devs run one command to update.
 ### 1. Clone and install
 
 ```bash
-git clone git@github.com:declan-moonward/claude-code-marketplace.git ~/.claude-marketplace && ~/.claude-marketplace/scripts/install.sh
+git clone https://github.com/declan-moonward/claude-code-marketplace.git ~/.claude-marketplace && ~/.claude-marketplace/scripts/install.sh
 ```
 
 This will:

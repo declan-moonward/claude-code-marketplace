@@ -37,7 +37,7 @@ ensure_repo() {
     warn "Marketplace repo not found at $MARKETPLACE_DIR"
     warn "Clone it first:"
     echo ""
-    echo "  git clone git@github.com:declan-moonward/claude-code-marketplace.git ~/.claude-marketplace"
+    echo "  git clone https://github.com/declan-moonward/claude-code-marketplace.git ~/.claude-marketplace"
     echo ""
     exit 1
   fi
