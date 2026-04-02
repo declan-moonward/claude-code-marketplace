@@ -53,16 +53,16 @@ git pull && ./scripts/install.sh
 
 ## MCP Server Setup
 
-The `team-standards` plugin includes MCP server configs for GitHub, Jira, Notion, and Figma. Set these environment variables before using:
+The `team-standards` plugin includes OAuth-based MCP server configs for GitHub, Atlassian (Jira/Confluence), Notion, and Figma. No API keys or environment variables needed.
+
+After installing the plugin, authenticate each server via the `/mcp` command in Claude Code. This launches a browser-based OAuth flow — tokens are managed and refreshed automatically.
 
 ```bash
-export GITHUB_TOKEN="your-token"
-export JIRA_API_TOKEN="your-token"
-export JIRA_EMAIL="you@company.com"
-export JIRA_URL="https://yourcompany.atlassian.net"
-export NOTION_API_KEY="your-key"
-export FIGMA_ACCESS_TOKEN="your-token"
+# In a Claude Code session, authenticate your MCP servers:
+/mcp
 ```
+
+Each developer authenticates once per service. Tokens are stored securely in their local keychain and refresh automatically.
 
 ## Uninstall
 

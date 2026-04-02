@@ -1,34 +1,23 @@
 {
   "mcpServers": {
     "github": {
-      "command": "npx",
-      "args": ["-y", "@modelcontextprotocol/server-github"],
-      "env": {
-        "GITHUB_PERSONAL_ACCESS_TOKEN": "${GITHUB_TOKEN}"
+      "type": "http",
+      "url": "https://api.githubcopilot.com/mcp/",
+      "oauth": {
+        "callbackPort": 8080
       }
     },
-    "jira": {
-      "command": "npx",
-      "args": ["-y", "@anthropic/mcp-server-atlassian"],
-      "env": {
-        "JIRA_API_TOKEN": "${JIRA_API_TOKEN}",
-        "JIRA_EMAIL": "${JIRA_EMAIL}",
-        "JIRA_URL": "${JIRA_URL}"
-      }
+    "atlassian": {
+      "type": "http",
+      "url": "https://mcp.atlassian.com/v1/mcp"
     },
     "notion": {
-      "command": "npx",
-      "args": ["-y", "@notionhq/mcp-server-notion"],
-      "env": {
-        "NOTION_API_KEY": "${NOTION_API_KEY}"
-      }
+      "type": "http",
+      "url": "https://mcp.notion.com/mcp"
     },
     "figma": {
-      "command": "npx",
-      "args": ["-y", "@anthropic/mcp-server-figma"],
-      "env": {
-        "FIGMA_ACCESS_TOKEN": "${FIGMA_ACCESS_TOKEN}"
-      }
+      "type": "http",
+      "url": "https://mcp.figma.com/mcp"
     }
   }
 }
