@@ -10,7 +10,13 @@ Push an update to this repo, devs run one command to update.
 
 ### Prerequisites
 
-You need the [GitHub CLI](https://cli.github.com/) installed and authenticated:
+**Claude Code** — install via npm:
+
+```bash
+npm install -g @anthropic-ai/claude-code
+```
+
+**GitHub CLI** — needed to clone this private repo:
 
 ```bash
 brew install gh
