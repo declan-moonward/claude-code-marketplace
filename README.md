@@ -8,6 +8,17 @@ Push an update to this repo, devs run one command to update.
 
 ## Setup (First Time)
 
+### Prerequisites
+
+You need the [GitHub CLI](https://cli.github.com/) installed and authenticated:
+
+```bash
+brew install gh
+gh auth login
+```
+
+Follow the prompts to authenticate via browser. This gives you HTTPS access to clone private repos.
+
 ### 1. Clone and install
 
 ```bash
@@ -27,7 +38,13 @@ source ~/.zshrc    # or source ~/.bashrc
 
 ### 3. Authenticate MCP servers
 
-Open a Claude Code session and run:
+Open Claude Code in any project directory:
+
+```bash
+claude
+```
+
+Then run the following command inside the session:
 
 ```
 /mcp
