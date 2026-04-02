@@ -101,6 +101,7 @@ claude-marketplace team-standards
 | Code Review | `/code-review` | Multi-aspect review of current branch changes |
 | PR Create | `/pr-create [TICKET-123]` | Create a well-structured PR with summary and test plan |
 | Ticket Workflow | `/ticket-workflow TICKET-123` | Start work on a ticket — creates branch, sets up context |
+| Release Notes | `/release-notes [range]` | Generate client-friendly release notes from git history |
 | Jira Ticket | `/jira-ticket TICKET-123` | Fetch and display Jira ticket details |
 
 ### Hooks (things that run automatically)
