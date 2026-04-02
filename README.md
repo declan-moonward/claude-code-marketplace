@@ -1,83 +1,184 @@
 # Claude Code Marketplace
 
-Private plugin marketplace for Claude Code. Single source of truth for skills, hooks, agents, and MCP servers.
+Private plugin marketplace for Claude Code. Single source of truth for team skills, hooks, agents, and MCP servers.
 
-## Quick Start
+Push an update to this repo, Slack notifies the team, devs run one command to update.
 
-```bash
-# Clone the marketplace
-git clone git@github.com:declan-moonward/claude-code-marketplace.git
-cd claude-code-marketplace
+---
 
-# Install all plugins
-./scripts/install.sh
+## Setup (First Time)
 
-# Or install a specific plugin
-./scripts/install.sh team-standards
-```
-
-## How It Works
-
-The install script creates symlinks from your `~/.claude/` directory to this repo. When plugins are updated, pull the latest and re-run the installer:
+### 1. Run the install script
 
 ```bash
-git pull && ./scripts/install.sh
+bash <(curl -sL https://raw.githubusercontent.com/declan-moonward/claude-code-marketplace/main/scripts/install.sh)
 ```
 
-## Plugins
+This will:
+- Clone this repo to `~/.claude-marketplace/`
+- Copy all plugin files (skills, agents, hooks, MCP config) into `~/.claude/`
+- Add a `claude-marketplace` alias to your shell
 
-| Plugin | Description | Status |
-|--------|-------------|--------|
-| **team-standards** | Code review, PR creation, ticket workflows, quality-gate hooks, reviewer agent | Stable |
-| **jira-integration** | Jira ticket management and workflow automation | Stable |
-| **qa-tools** | QA testing utilities | Coming soon |
-
-## Structure
-
-```
-├── .claude-plugin/
-│   └── marketplace.json          # Plugin catalogue
-├── plugins/
-│   ├── team-standards/           # Core dev team plugin
-│   │   ├── skills/               # code-review, pr-create, ticket-workflow
-│   │   ├── agents/               # reviewer agent
-│   │   ├── hooks/                # lint-check, pre-commit-checks
-│   │   └── .mcp.json             # GitHub, Jira, Notion, Figma MCP servers
-│   ├── jira-integration/         # Jira-specific skills
-│   └── qa-tools/                 # QA tools (planned)
-├── scripts/
-│   ├── install.sh                # Install/update plugins
-│   └── uninstall.sh              # Remove plugins
-└── README.md
-```
-
-## MCP Server Setup
-
-The `team-standards` plugin includes OAuth-based MCP server configs for GitHub, Atlassian (Jira/Confluence), Notion, and Figma. No API keys or environment variables needed.
-
-After installing the plugin, authenticate each server via the `/mcp` command in Claude Code. This launches a browser-based OAuth flow — tokens are managed and refreshed automatically.
+### 2. Reload your shell
 
 ```bash
-# In a Claude Code session, authenticate your MCP servers:
+source ~/.zshrc    # or source ~/.bashrc
+```
+
+### 3. Authenticate MCP servers
+
+Open a Claude Code session and run:
+
+```
 /mcp
 ```
 
-Each developer authenticates once per service. Tokens are stored securely in their local keychain and refresh automatically.
+This launches a browser-based OAuth flow for each service (GitHub, Atlassian, Notion, Figma). You authenticate once per service — tokens refresh automatically after that.
 
-## Uninstall
+### 4. Verify
 
-```bash
-# Remove all plugins
-./scripts/uninstall.sh
+In a Claude Code session, try invoking a skill:
 
-# Remove a specific plugin
-./scripts/uninstall.sh team-standards
+```
+/code-review
+/pr-create
+/ticket-workflow TICKET-123
 ```
 
-## Adding a New Plugin
+---
 
-1. Create a directory under `plugins/your-plugin-name/`
-2. Add `.claude-plugin/plugin.json` with plugin metadata
-3. Add skills, agents, hooks as needed
-4. Update `.claude-plugin/marketplace.json` in the root
-5. Push and notify the team
+## Updating
+
+When you get a Slack notification that the marketplace has been updated:
+
+```bash
+claude-marketplace
+```
+
+That's it. The command pulls the latest changes and re-copies all plugin files.
+
+To update a specific plugin only:
+
+```bash
+claude-marketplace team-standards
+```
+
+---
+
+## What's Included
+
+### Plugins
+
+| Plugin | What it does | Status |
+|--------|-------------|--------|
+| **team-standards** | Code review, PR creation, ticket workflows, reviewer agent, lint/secret hooks | Stable |
+| **jira-integration** | Jira ticket lookup and workflow automation | Stable |
+| **qa-tools** | QA testing utilities | Planned |
+
+### Skills (things you invoke)
+
+| Skill | Command | Description |
+|-------|---------|-------------|
+| Code Review | `/code-review` | Multi-aspect review of current branch changes |
+| PR Create | `/pr-create [TICKET-123]` | Create a well-structured PR with summary and test plan |
+| Ticket Workflow | `/ticket-workflow TICKET-123` | Start work on a ticket — creates branch, sets up context |
+| Jira Ticket | `/jira-ticket TICKET-123` | Fetch and display Jira ticket details |
+
+### Hooks (things that run automatically)
+
+| Hook | Trigger | What it does |
+|------|---------|-------------|
+| `lint-check.sh` | After file edit | Runs linter on edited files (ESLint, Ruff, golangci-lint) |
+| `pre-commit-checks.sh` | Before commit | Blocks commits containing secrets or .env files |
+
+### Agents (specialist subagents)
+
+| Agent | Description |
+|-------|-------------|
+| `reviewer` | Multi-aspect code reviewer (security, performance, style, correctness) |
+
+### MCP Servers (OAuth)
+
+| Service | What it enables |
+|---------|----------------|
+| GitHub | Repo access, PR management, issue tracking |
+| Atlassian | Jira tickets, Confluence docs |
+| Notion | Page and database access |
+| Figma | Design file inspection |
+
+---
+
+## Uninstalling
+
+Remove all plugins but keep the repo:
+
+```bash
+~/.claude-marketplace/scripts/uninstall.sh
+```
+
+Full removal (plugins + repo clone + shell alias):
+
+```bash
+~/.claude-marketplace/scripts/uninstall.sh --full
+```
+
+---
+
+## For Marketplace Maintainers
+
+### Adding or updating a plugin
+
+1. Make your changes under `plugins/your-plugin-name/`
+2. If it's a new plugin, add an entry to `.claude-plugin/marketplace.json`
+3. Commit and push to `main`
+4. Slack notification fires automatically — devs run `claude-marketplace` to update
+
+### Plugin structure
+
+```
+plugins/your-plugin-name/
+├── .claude-plugin/
+│   └── plugin.json          # Plugin metadata
+├── skills/
+│   └── your-skill/
+│       └── SKILL.md         # Skill definition
+├── agents/
+│   └── your-agent.md        # Agent definition
+├── hooks/
+│   └── your-hook.sh         # Hook script
+└── .mcp.json                # MCP server config (optional)
+```
+
+### Setting up Slack notifications
+
+1. Create a [Slack Incoming Webhook](https://api.slack.com/messaging/webhooks)
+2. Add it as a repository secret named `SLACK_WEBHOOK_URL`:
+   - Go to repo Settings > Secrets and variables > Actions
+   - Click "New repository secret"
+   - Name: `SLACK_WEBHOOK_URL`, Value: your webhook URL
+
+Notifications fire on any push to `main` that changes files under `plugins/` or `.claude-plugin/`.
+
+---
+
+## Repo Structure
+
+```
+├── .claude-plugin/
+│   └── marketplace.json              # Plugin catalogue
+├── .github/
+│   └── workflows/
+│       └── notify-slack.yml          # Slack notification on update
+├── plugins/
+│   ├── team-standards/               # Core dev team plugin
+│   │   ├── skills/                   # code-review, pr-create, ticket-workflow
+│   │   ├── agents/                   # reviewer agent
+│   │   ├── hooks/                    # lint-check, pre-commit-checks
+│   │   └── .mcp.json                 # OAuth MCP servers
+│   ├── jira-integration/             # Jira-specific skills
+│   └── qa-tools/                     # QA tools (planned)
+├── scripts/
+│   ├── install.sh                    # Install / update (the one command)
+│   └── uninstall.sh                  # Remove plugins
+└── README.md
+```
