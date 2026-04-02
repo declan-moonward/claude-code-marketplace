@@ -10,9 +10,18 @@
   "agents": [
     "agents/reviewer.md"
   ],
-  "hooks": {
-    "post-file-edit": "hooks/lint-check.sh",
-    "pre-commit": "hooks/pre-commit-checks.sh"
-  },
+  "hooks": [
+    {
+      "event": "PostToolUse",
+      "matcher": "Edit|Write",
+      "command": "hooks/lint-check.sh"
+    },
+    {
+      "event": "PreToolUse",
+      "matcher": "Bash",
+      "if": "Bash(git commit *)",
+      "command": "hooks/pre-commit-checks.sh"
+    }
+  ],
   "mcp": ".mcp.json"
 }

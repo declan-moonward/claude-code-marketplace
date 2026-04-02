@@ -16,6 +16,7 @@ CLAUDE_DIR="$HOME/.claude"
 SKILLS_DIR="$CLAUDE_DIR/skills"
 AGENTS_DIR="$CLAUDE_DIR/agents"
 HOOKS_DIR="$CLAUDE_DIR/hooks"
+SETTINGS_FILE="$CLAUDE_DIR/settings.json"
 
 GREEN='\033[0;32m'
 YELLOW='\033[1;33m'
@@ -49,6 +50,99 @@ ensure_repo() {
 ensure_dirs() {
   mkdir -p "$SKILLS_DIR" "$AGENTS_DIR" "$HOOKS_DIR"
 }
+
+check_deps() {
+  if ! command -v jq &>/dev/null; then
+    warn "jq is required but not installed."
+    warn "Install it: brew install jq (macOS) or apt install jq (Linux)"
+    exit 1
+  fi
+}
+
+# ── Hooks wiring ────────────────────────────────────────────────────────────
+
+install_hooks_config() {
+  local plugin_dir="$1"
+  local plugin_json="$plugin_dir/.claude-plugin/plugin.json"
+
+  # Check if plugin has hooks array
+  local hooks_count
+  hooks_count=$(jq -r '.hooks | if type == "array" then length else 0 end' "$plugin_json" 2>/dev/null || echo "0")
+  [ "$hooks_count" -gt 0 ] || return 0
+
+  local plugin_name
+  plugin_name="$(basename "$plugin_dir")"
+
+  # Initialize settings.json if it doesn't exist
+  if [ ! -f "$SETTINGS_FILE" ]; then
+    echo '{}' > "$SETTINGS_FILE"
+  fi
+
+  # Build hook entries from plugin.json and merge into settings.json
+  local i=0
+  while [ "$i" -lt "$hooks_count" ]; do
+    local event matcher command if_filter
+    event=$(jq -r ".hooks[$i].event" "$plugin_json")
+    matcher=$(jq -r ".hooks[$i].matcher" "$plugin_json")
+    command=$(jq -r ".hooks[$i].command" "$plugin_json")
+    if_filter=$(jq -r ".hooks[$i].if // empty" "$plugin_json")
+
+    # Resolve command to installed path
+    local hook_script="$HOOKS_DIR/$(basename "$command")"
+
+    # Build the hook handler object
+    local hook_handler
+    if [ -n "$if_filter" ]; then
+      hook_handler=$(jq -n --arg cmd "$hook_script" --arg if_val "$if_filter" \
+        '{"type": "command", "command": $cmd, "if": $if_val}')
+    else
+      hook_handler=$(jq -n --arg cmd "$hook_script" \
+        '{"type": "command", "command": $cmd}')
+    fi
+
+    # Build the matcher group with a marketplace tag for tracking
+    local matcher_group
+    matcher_group=$(jq -n --arg m "$matcher" --arg src "marketplace:$plugin_name" \
+      --argjson handler "$hook_handler" \
+      '{"matcher": $m, "_source": $src, "hooks": [$handler]}')
+
+    # Merge into settings.json: add to the event array, replacing any existing entry from same source
+    local tmp_file
+    tmp_file=$(mktemp)
+    jq --arg event "$event" --arg src "marketplace:$plugin_name" \
+       --argjson new_group "$matcher_group" \
+      '
+      .hooks //= {} |
+      .hooks[$event] //= [] |
+      # Remove existing entries from same marketplace source with same matcher
+      .hooks[$event] = [.hooks[$event][] | select(._source != $src or .matcher != $new_group.matcher)] |
+      # Add the new entry
+      .hooks[$event] += [$new_group]
+      ' "$SETTINGS_FILE" > "$tmp_file" && mv "$tmp_file" "$SETTINGS_FILE"
+
+    i=$((i + 1))
+  done
+
+  info "  Configured hooks in settings.json"
+}
+
+# ── MCP config merge ────────────────────────────────────────────────────────
+
+merge_mcp_config() {
+  local plugin_mcp="$1"
+
+  if [ ! -f "$CLAUDE_DIR/.mcp.json" ]; then
+    cp -f "$plugin_mcp" "$CLAUDE_DIR/.mcp.json"
+  else
+    # Deep merge: plugin values override existing for same keys, existing keys preserved
+    local tmp_file
+    tmp_file=$(mktemp)
+    jq -s '.[0] * .[1]' "$CLAUDE_DIR/.mcp.json" "$plugin_mcp" > "$tmp_file" \
+      && mv "$tmp_file" "$CLAUDE_DIR/.mcp.json"
+  fi
+}
+
+# ── Install plugins ─────────────────────────────────────────────────────────
 
 install_plugin() {
   local plugin_dir="$1"
@@ -98,11 +192,14 @@ install_plugin() {
     done
   fi
 
-  # Copy MCP config
+  # Merge MCP config
   if [ -f "$plugin_dir/.mcp.json" ]; then
-    cp -f "$plugin_dir/.mcp.json" "$CLAUDE_DIR/.mcp.json"
+    merge_mcp_config "$plugin_dir/.mcp.json"
     info "  Installed MCP config"
   fi
+
+  # Wire hooks into settings.json
+  install_hooks_config "$plugin_dir"
 
   log "Plugin '$plugin_name' installed"
   echo ""
@@ -143,6 +240,7 @@ main() {
   echo "========================"
   echo ""
 
+  check_deps
   ensure_repo
   ensure_dirs
 

@@ -12,6 +12,7 @@ set -euo pipefail
 
 MARKETPLACE_DIR="$HOME/.claude-marketplace"
 CLAUDE_DIR="$HOME/.claude"
+SETTINGS_FILE="$CLAUDE_DIR/settings.json"
 PLUGIN_ARG="${1:-all}"
 
 GREEN='\033[0;32m'
@@ -70,6 +71,38 @@ uninstall_plugin() {
     done
   fi
 
+  # Remove hooks from settings.json
+  if [ -f "$SETTINGS_FILE" ] && command -v jq &>/dev/null; then
+    local source_tag="marketplace:$plugin_name"
+    local tmp_file
+    tmp_file=$(mktemp)
+    jq --arg src "$source_tag" '
+      if .hooks then
+        .hooks |= with_entries(
+          .value |= [.[] | select(._source != $src)] |
+          select(.value | length > 0)
+        )
+      else . end
+    ' "$SETTINGS_FILE" > "$tmp_file" && mv "$tmp_file" "$SETTINGS_FILE"
+    log "  Removed hooks from settings.json"
+  fi
+
+  # Remove marketplace MCP servers from .mcp.json
+  if [ -f "$CLAUDE_DIR/.mcp.json" ] && [ -f "$plugin_dir/.mcp.json" ] && command -v jq &>/dev/null; then
+    local mcp_keys
+    mcp_keys=$(jq -r '.mcpServers // {} | keys[]' "$plugin_dir/.mcp.json" 2>/dev/null || true)
+    if [ -n "$mcp_keys" ]; then
+      local tmp_file
+      tmp_file=$(mktemp)
+      local del_args=""
+      for key in $mcp_keys; do
+        del_args="$del_args | del(.mcpServers.\"$key\")"
+      done
+      jq "${del_args# | }" "$CLAUDE_DIR/.mcp.json" > "$tmp_file" && mv "$tmp_file" "$CLAUDE_DIR/.mcp.json"
+      log "  Removed MCP servers from .mcp.json"
+    fi
+  fi
+
   log "Plugin '$plugin_name' uninstalled"
 }
 
@@ -93,6 +126,20 @@ main() {
       [ -d "$plugin_dir" ] || continue
       uninstall_plugin "$plugin_dir"
     done
+    # Remove all marketplace hooks from settings.json
+    if [ -f "$SETTINGS_FILE" ] && command -v jq &>/dev/null; then
+      local tmp_file
+      tmp_file=$(mktemp)
+      jq '
+        if .hooks then
+          .hooks |= with_entries(
+            .value |= [.[] | select(._source == null or (._source | startswith("marketplace:") | not))] |
+            select(.value | length > 0)
+          )
+        else . end
+      ' "$SETTINGS_FILE" > "$tmp_file" && mv "$tmp_file" "$SETTINGS_FILE"
+      log "Removed marketplace hooks from settings.json"
+    fi
     # Remove MCP config if it was installed by marketplace
     if [ -f "$CLAUDE_DIR/.mcp.json" ]; then
       rm -f "$CLAUDE_DIR/.mcp.json"
