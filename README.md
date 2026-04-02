@@ -10,20 +10,16 @@ Push an update to this repo, devs run one command to update.
 
 ### Prerequisites
 
-**Claude Code** — install via npm:
+1. **Claude Code** — Install and set up Claude Code by following the [quickstart guide](https://code.claude.com/docs/en/quickstart).
 
-```bash
-npm install -g @anthropic-ai/claude-code
-```
+2. **GitHub CLI** — Install and authenticate to clone private repos:
 
-**GitHub CLI** — needed to clone this private repo:
+   ```bash
+   brew install gh
+   gh auth login
+   ```
 
-```bash
-brew install gh
-gh auth login
-```
-
-Follow the prompts to authenticate via browser. This gives you HTTPS access to clone private repos.
+   Follow the prompts to authenticate via browser.
 
 ### 1. Clone and install
 
