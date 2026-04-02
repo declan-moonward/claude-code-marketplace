@@ -1,0 +1,31 @@
+{
+  "name": "claude-code-marketplace",
+  "version": "1.0.0",
+  "description": "Private plugin marketplace for Claude Code - single source of truth for skills, hooks, agents, and MCP servers",
+  "plugins": [
+    {
+      "id": "team-standards",
+      "name": "Team Standards",
+      "description": "Core development team plugin with code review, PR creation, and ticket workflow skills",
+      "path": "plugins/team-standards",
+      "version": "1.0.0",
+      "category": "core"
+    },
+    {
+      "id": "jira-integration",
+      "name": "Jira Integration",
+      "description": "Jira-specific skills for ticket management and workflow automation",
+      "path": "plugins/jira-integration",
+      "version": "1.0.0",
+      "category": "integration"
+    },
+    {
+      "id": "qa-tools",
+      "name": "QA Tools",
+      "description": "Quality assurance tools and testing utilities",
+      "path": "plugins/qa-tools",
+      "version": "0.1.0",
+      "category": "testing"
+    }
+  ]
+}
