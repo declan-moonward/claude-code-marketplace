@@ -8,10 +8,10 @@ Push an update to this repo, devs run one command to update.
 
 ## Setup (First Time)
 
-### 1. Run the install script
+### 1. Clone and install
 
 ```bash
-bash <(curl -sL https://raw.githubusercontent.com/declan-moonward/claude-code-marketplace/main/scripts/install.sh)
+git clone git@github.com:declan-moonward/claude-code-marketplace.git ~/.claude-marketplace && ~/.claude-marketplace/scripts/install.sh
 ```
 
 This will:

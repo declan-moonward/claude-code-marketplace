@@ -11,7 +11,6 @@
 
 set -euo pipefail
 
-REPO_URL="https://github.com/declan-moonward/claude-code-marketplace.git"
 MARKETPLACE_DIR="$HOME/.claude-marketplace"
 CLAUDE_DIR="$HOME/.claude"
 SKILLS_DIR="$CLAUDE_DIR/skills"
@@ -34,8 +33,13 @@ ensure_repo() {
     log "Pulling latest marketplace updates..."
     git -C "$MARKETPLACE_DIR" pull --ff-only 2>&1 | sed 's/^/  /'
   else
-    log "Cloning marketplace repo..."
-    git clone "$REPO_URL" "$MARKETPLACE_DIR" 2>&1 | sed 's/^/  /'
+    echo ""
+    warn "Marketplace repo not found at $MARKETPLACE_DIR"
+    warn "Clone it first:"
+    echo ""
+    echo "  git clone git@github.com:declan-moonward/claude-code-marketplace.git ~/.claude-marketplace"
+    echo ""
+    exit 1
   fi
   echo ""
 }
