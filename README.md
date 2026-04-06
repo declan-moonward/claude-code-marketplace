@@ -86,6 +86,12 @@ claude-marketplace team-standards
 
 ## What's Included
 
+### Global CLAUDE.md (Coding Standards)
+
+The marketplace deploys a global `CLAUDE.md` to `~/.claude/CLAUDE.md`, which applies to **every project** on the developer's machine. This enforces team-wide coding conventions — naming (kebab-case files, camelCase variables, PascalCase components), code style (named exports, early returns, strict TypeScript), project structure, and git/PR conventions.
+
+Edit `CLAUDE.md` in the marketplace root to update standards for the whole team.
+
 ### Plugins
 
 | Plugin | What it does | Status |

@@ -263,6 +263,12 @@ main() {
     install_plugin "$target_dir"
   fi
 
+  # Install global CLAUDE.md
+  if [ -f "$MARKETPLACE_DIR/CLAUDE.md" ]; then
+    cp -f "$MARKETPLACE_DIR/CLAUDE.md" "$CLAUDE_DIR/CLAUDE.md"
+    info "Installed global CLAUDE.md (team coding standards)"
+  fi
+
   install_alias
 
   echo ""
