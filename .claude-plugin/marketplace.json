@@ -11,15 +11,7 @@
       "version": "1.0.0",
       "category": "core"
     },
-    {
-      "id": "jira-integration",
-      "name": "Jira Integration",
-      "description": "Jira-specific skills for ticket management and workflow automation",
-      "path": "plugins/jira-integration",
-      "version": "1.0.0",
-      "category": "integration"
-    },
-    {
+{
       "id": "qa-tools",
       "name": "QA Tools",
       "description": "Quality assurance tools and testing utilities",
