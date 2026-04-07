@@ -1,32 +1,65 @@
-# Team Coding Standards
+# Moonward AI Coding Standards
 
-These conventions apply to all projects. They are deployed globally via the Claude Code Marketplace.
+## General Behavior
 
-## Naming Conventions
+- Keep changes minimal — do not refactor unrelated code.
+- Follow existing patterns in the repo.
+- Ask before introducing new libraries.
+- Prefer editing over rewriting.
+- Explain non-obvious changes.
+- Preserve comments and TODOs.
 
-- **Files & directories**: kebab-case (`user-profile.ts`, `api-utils/`)
-- **Variables & functions**: camelCase (`getUserProfile`, `isActive`)
-- **React components & TypeScript types/interfaces**: PascalCase (`UserProfile`, `ApiResponse`)
-- **CSS classes**: kebab-case (`nav-header`, `btn-primary`)
-- **Constants**: UPPER_SNAKE_CASE (`MAX_RETRIES`, `API_BASE_URL`)
-- **Environment variables**: UPPER_SNAKE_CASE prefixed by context (`NEXT_PUBLIC_`, `EXPO_PUBLIC_`)
+## Code Style & Naming
 
-## Code Style
+- Follow the AirBnB style guide.
+- Optimize for readability over premature optimization.
+- **React files**: kebab-case (e.g. `app-text.tsx`)
+- **React components**: PascalCase (e.g. `AppText`)
+- **Non-React files**: kebab-case (e.g. `utils-helper.ts`)
+- **Variables/functions**: camelCase
 
-- Prefer named exports over default exports
-- Prefer `const` over `let`; never use `var`
-- Prefer early returns over deeply nested conditionals
-- Keep functions under 50 lines; extract helpers when complexity grows
-- Use TypeScript strict mode; avoid `any` — use `unknown` and narrow
+## Security
 
-## Project Structure
+- Do not log secrets, tokens, or API keys.
+- Do not hardcode environment values — use `.env`.
+- Do not weaken authentication or validation logic.
+- Be cautious when modifying payment or auth flows.
 
-- Group by feature, not by type (e.g., `features/auth/` not `components/`, `hooks/`, `utils/` at top level)
-- Co-locate tests next to source files (`user-profile.test.ts` beside `user-profile.ts`)
-- Keep shared utilities in a `lib/` or `shared/` directory
+## React (All Platforms)
 
-## Git & PRs
+### Core
 
-- Branch names: `<type>/<ticket>-<short-description>` (e.g., `feat/PROJ-123-add-login`)
-- Commit messages: imperative mood, under 72 characters (e.g., "Add login form validation")
-- One logical change per commit
+- Use functional components only — no class components.
+- Use named exports for components.
+- Always define a TypeScript type/interface for component props.
+
+### Hooks
+
+- Call hooks at the top level only.
+- Extract logic into custom hooks or services, not inside JSX.
+- Place all custom hooks in a `hooks/` folder.
+
+### State Management
+
+- Use React Provider-Context pattern to avoid prop drilling more than 4 levels deep.
+
+### File Organization
+
+- Split files exceeding ~200 lines into smaller component files.
+- Each component file should have a single responsibility.
+- Extract reusable UI pieces into `components/`.
+
+### Performance
+
+- Componentize UI blocks to ensure minimal re-renders.
+- Modularize components into smaller, reusable pieces.
+
+### Data Fetching
+
+- Use TanStack Query (`useQuery` / `useMutation`) for server state.
+- Refer to `/backend-sdk/schema.d.ts` for OpenAPI fetcher types.
+
+### Forms & Validation
+
+- Use `react-hook-form` for all form handling.
+- Use `zod` for schema validation.
