@@ -18,6 +18,14 @@
       "path": "plugins/qa-tools",
       "version": "0.1.0",
       "category": "testing"
+    },
+    {
+      "id": "skill-creator",
+      "name": "Skill Creator",
+      "description": "Skill authoring toolkit - create, test, and iterate on Claude Code skills with built-in evaluation workflows",
+      "path": "plugins/skill-creator",
+      "version": "1.0.0",
+      "category": "tooling"
     }
   ]
 }

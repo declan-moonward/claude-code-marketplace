@@ -1,0 +1,15 @@
+{
+  "name": "skill-creator",
+  "version": "1.0.0",
+  "description": "Skill authoring toolkit - create, test, and iterate on Claude Code skills with built-in evaluation workflows",
+  "skills": [
+    "skills/skill-creator/SKILL.md"
+  ],
+  "agents": [
+    "skills/skill-creator/agents/analyzer.md",
+    "skills/skill-creator/agents/comparator.md",
+    "skills/skill-creator/agents/grader.md"
+  ],
+  "hooks": {},
+  "mcp": null
+}
