@@ -1,5 +1,5 @@
 ---
-name: release-notes
+name: changelog
 description: Generate client-friendly, categorized release notes from git history
 argument-hint: [date range | branch comparison | tag comparison]
 ---
