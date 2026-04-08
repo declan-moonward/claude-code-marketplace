@@ -4,6 +4,6 @@
   "description": "QA tools plugin - testing utilities and quality checks (coming soon)",
   "skills": [],
   "agents": [],
-  "hooks": {},
+  "hooks": [],
   "mcp": null
 }

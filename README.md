@@ -97,7 +97,7 @@ Edit `CLAUDE.md` in the marketplace root to update standards for the whole team.
 | Plugin | What it does | Status |
 |--------|-------------|--------|
 | **team-standards** | Code review, PR creation, ticket workflows, reviewer agent, lint/secret hooks | Stable |
-| **jira-integration** | Jira ticket lookup and workflow automation | Stable |
+| **skill-creator** | Skill authoring toolkit with evaluation and benchmarking infrastructure | Stable |
 | **qa-tools** | QA testing utilities | Planned |
 
 ### Skills (things you invoke)
@@ -188,7 +188,7 @@ plugins/your-plugin-name/
 │   │   ├── agents/                   # reviewer agent
 │   │   ├── hooks/                    # lint-check, pre-commit-checks
 │   │   └── .mcp.json                 # OAuth MCP servers
-│   ├── jira-integration/             # Jira-specific skills
+│   ├── skill-creator/                # Skill authoring toolkit
 │   └── qa-tools/                     # QA tools (planned)
 ├── scripts/
 │   ├── install.sh                    # Install / update (the one command)
