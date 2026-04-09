@@ -1,9 +1,0 @@
-{
-  "name": "qa-tools",
-  "version": "0.1.0",
-  "description": "QA tools plugin - testing utilities and quality checks (coming soon)",
-  "skills": [],
-  "agents": [],
-  "hooks": [],
-  "mcp": null
-}

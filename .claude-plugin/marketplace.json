@@ -26,6 +26,14 @@
       "path": "plugins/skill-creator",
       "version": "1.0.0",
       "category": "tooling"
+    },
+    {
+      "id": "frontend-standards",
+      "name": "Frontend Standards",
+      "description": "Moonward frontend coding standards for React Native (Expo) and Next.js (App Router)",
+      "path": "plugins/frontend-standards",
+      "version": "1.0.0",
+      "category": "core"
     }
   ]
 }

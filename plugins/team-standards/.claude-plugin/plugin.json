@@ -5,7 +5,9 @@
   "skills": [
     "skills/code-review/SKILL.md",
     "skills/pr-create/SKILL.md",
-    "skills/ticket-workflow/SKILL.md"
+    "skills/ticket-workflow/SKILL.md",
+    "skills/impl-plan/SKILL.md",
+    "skills/arch-review/SKILL.md"
   ],
   "agents": [
     "agents/reviewer.md"

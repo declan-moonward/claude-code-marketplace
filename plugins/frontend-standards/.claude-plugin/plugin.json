@@ -1,0 +1,9 @@
+{
+  "name": "frontend-standards",
+  "version": "1.0.0",
+  "description": "Moonward frontend coding standards for React Native (Expo) and Next.js (App Router)",
+  "skills": [
+    "skills/react-native-standards/SKILL.md",
+    "skills/nextjs-standards/SKILL.md"
+  ]
+}
